@@ -18,14 +18,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.NetworkInterface;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -88,20 +86,38 @@ public class MainActivity extends AppCompatActivity {
         pro=findViewById(R.id.pro);
         pro.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.orange),android.graphics.PorterDuff.Mode.MULTIPLY);
     }
-    public void getResults(String data)
+    public void getResults(final String data)
     {
-        new StringRequest(Request.Method.GET,"https://android-club-project.herokuapp.com/upload_details?reg_no="+data+"&mac="+macAdd,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        res.setText("Recieved Message\n"+ response.substring(0,500).trim());pro.setVisibility(View.GONE);
-                    }
-                }, new Response.ErrorListener() {
+        new Thread(new Runnable() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                res.setText("Something Went\nWrong");pro.setVisibility(View.GONE);
+            public void run()
+            {
+                try
+                {
+                    URL u = new URL("https://android-club-project.herokuapp.com/upload_details?reg_no="+data+"&mac="+macAdd);
+                    HttpURLConnection c = (HttpURLConnection) u.openConnection();
+                    c.setRequestMethod("GET");
+                    c.connect();
+                    InputStream in = c.getInputStream();
+                    final ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[1024];
+                    in.read(buffer);
+                    bo.write(buffer);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                res.setText(bo.toString().trim());pro.setVisibility(View.GONE);
+                                bo.close();
+                            } catch (IOException e) {
+                                res.setText("Something Went\nWrong");pro.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                }
+                catch (Exception e){res.setText("Something Went\nWrong");pro.setVisibility(View.GONE);}
             }
-        });
+        }).start();
     }
     public static String getMacAddr() {
         try {

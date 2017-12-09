@@ -77,8 +77,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:textColor="@color/orange"
+                android:textSize="20sp"
                 android:gravity="center"
                 android:id="@+id/res"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/orange"
+                android:text="Click to reset"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:id="@+id/reset"/>
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
