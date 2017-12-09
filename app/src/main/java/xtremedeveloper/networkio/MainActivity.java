@@ -1,10 +1,14 @@
 package xtremedeveloper.networkio;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.net.NetworkInterface;
@@ -13,6 +17,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     TextView mac;
+    ProgressBar pro;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +25,9 @@ public class MainActivity extends AppCompatActivity {
 
         mac=findViewById(R.id.mac);
         mac.setText(getMacAddr());
+
+        pro=findViewById(R.id.pro);
+        pro.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.orange),android.graphics.PorterDuff.Mode.MULTIPLY);
     }
     public static String getMacAddr() {
         try {
