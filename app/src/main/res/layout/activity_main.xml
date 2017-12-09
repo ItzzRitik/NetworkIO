@@ -49,20 +49,23 @@
             android:textStyle="bold"
             android:textColor="@color/colorPrimary"
             android:textSize="23sp"/>
+
         <EditText
+            android:id="@+id/reg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/regTag"
             android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:id="@+id/reg"
-            android:hint="Enter Here"
-            android:textColor="@color/colorPrimary"
             android:background="@null"
+            android:gravity="center"
+            android:hint="Enter Here"
+            android:singleLine="true"
+            android:textColor="@color/colorPrimary"
             android:textSize="18sp"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/results"
             android:visibility="gone"
             android:background="@drawable/round_corner_overlay">
             <ProgressBar
@@ -70,6 +73,12 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/pro"
                 android:layout_centerInParent="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:id="@+id/res"/>
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>
