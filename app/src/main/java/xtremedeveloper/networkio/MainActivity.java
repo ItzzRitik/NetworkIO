@@ -1,17 +1,13 @@
 package xtremedeveloper.networkio;
 
 import android.animation.Animator;
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -29,7 +25,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
-    TextView mac,res;
+    TextView mac,res,reset;
     ProgressBar pro;
     EditText reg;
     RelativeLayout results,card;
@@ -45,7 +41,29 @@ public class MainActivity extends AppCompatActivity {
         mac.setText(macAdd);
 
         card=findViewById(R.id.card);
+
+        reset=findViewById(R.id.reset);
         results=findViewById(R.id.results);
+        results.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animator revealAnimator = ViewAnimationUtils.createCircularReveal(results,card.getWidth()/2,card.getHeight()/2, card.getWidth()*707/500,0);
+                revealAnimator.addListener(new Animator.AnimatorListener() {
+                    @Override public void onAnimationStart(Animator animator) {reg.setText("");}
+                    @Override
+                    public void onAnimationEnd(Animator animator) {
+                        results.setVisibility(View.GONE);pro.setVisibility(View.VISIBLE);
+                        res.setText("");
+                        reg.requestFocus();
+                    }
+                    @Override public void onAnimationCancel(Animator animator) {}
+                    @Override public void onAnimationRepeat(Animator animator) {}
+                });
+                revealAnimator.setInterpolator(new DecelerateInterpolator());
+                revealAnimator.setDuration(500);
+                revealAnimator.start();
+            }
+        });
 
         pat = Pattern.compile("[1-2][0-9][a-z]{3}[1-9]{4}");
         reg = findViewById(R.id.reg);
@@ -63,8 +81,9 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 Animator revealAnimator = ViewAnimationUtils.createCircularReveal(results,card.getWidth()/2,card.getHeight()/2, 0, card.getWidth()*707/500);
                                 results.setVisibility(View.VISIBLE);
-                                pro.setVisibility(View.VISIBLE);
+                                pro.setVisibility(View.VISIBLE);pro.requestFocus();
                                 revealAnimator.setDuration(500);
+                                revealAnimator.setInterpolator(new AccelerateInterpolator());
                                 revealAnimator.start();
                                 getResults(reg.getText().toString().substring(reg.length() - 4));
                             }
@@ -108,14 +127,15 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             try {
                                 res.setText(bo.toString().trim());pro.setVisibility(View.GONE);
+                                reset.setVisibility(View.VISIBLE);
                                 bo.close();
                             } catch (IOException e) {
-                                res.setText("Something Went\nWrong");pro.setVisibility(View.GONE);
+                                res.setText("Something Went\nWrong");pro.setVisibility(View.GONE);reset.setVisibility(View.VISIBLE);
                             }
                         }
                     });
                 }
-                catch (Exception e){res.setText("Something Went\nWrong");pro.setVisibility(View.GONE);}
+                catch (Exception e){res.setText("Something Went\nWrong");pro.setVisibility(View.GONE);reset.setVisibility(View.VISIBLE);}
             }
         }).start();
     }
